@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pelisapp/models/pelicula_model.dart';
 import 'package:pelisapp/providers/peliculas_providers.dart';
+import 'package:pelisapp/search/search_delegate.dart';
 import 'package:pelisapp/widgets/card_swiper_widget.dart';
 import 'package:pelisapp/widgets/movie_horizontal.dart';
 
@@ -9,8 +10,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     peliculasProvider.getPopulares();
     return Scaffold(
         appBar: AppBar(
@@ -20,7 +19,12 @@ class HomePage extends StatelessWidget {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: DataSearch(),
+                );
+              },
             )
           ],
         ),
@@ -74,7 +78,7 @@ class HomePage extends StatelessWidget {
                   siguientePagina: peliculasProvider.getPopulares,
                 );
               } else {
-                return Center(child:CircularProgressIndicator());
+                return Center(child: CircularProgressIndicator());
               }
             },
           )

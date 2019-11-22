@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pelisapp/models/actores_model.dart';
 import 'package:pelisapp/models/pelicula_model.dart';
+import 'package:pelisapp/providers/peliculas_providers.dart';
 
 class PeliculaDetalle extends StatelessWidget {
   @override
@@ -17,7 +19,14 @@ class PeliculaDetalle extends StatelessWidget {
               ),
               _posterTitulo(context, pelicula),
               _descripcion(pelicula),
-
+              Container(
+                padding: EdgeInsets.only(left: 10, bottom: 20),
+                child: Text(
+                  "Actores: ",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              _crearCasting(pelicula)
             ]),
           )
         ],
@@ -53,13 +62,16 @@ class PeliculaDetalle extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: Image(
-              image: NetworkImage(
-                pelicula.getPosterImg(),
+          Hero(
+            tag: pelicula.uniqueId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Image(
+                image: NetworkImage(
+                  pelicula.getPosterImg(),
+                ),
+                height: 150.0,
               ),
-              height: 150.0,
             ),
           ),
           SizedBox(width: 20),
@@ -99,5 +111,60 @@ class PeliculaDetalle extends StatelessWidget {
           pelicula.overview,
           textAlign: TextAlign.justify,
         ));
+  }
+
+  Widget _crearCasting(Pelicula pelicula) {
+    final peliProvider = new PeliculasProvider();
+
+    return FutureBuilder(
+      future: peliProvider.getCast(pelicula.id.toString()),
+      builder: (context, AsyncSnapshot<List>snapshot) {
+        if (snapshot.hasData) {
+          return _crearActoresPageView(snapshot.data);
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _crearActoresPageView(List<Actor> actores) {
+    return SizedBox(
+      height: 200,
+      child: PageView.builder(
+        itemCount: actores.length,
+        controller: PageController(
+          viewportFraction: 0.3,
+          initialPage: 1,
+        ),
+        itemBuilder: (context, i) {
+          return _actorTarjeta(actores[i]);
+        },
+      ),
+    );
+  }
+
+  Widget _actorTarjeta(Actor actor) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              image: NetworkImage(actor.getFoto()),
+              placeholder: AssetImage('assets/img/no-image.jpg'),
+              height: 150,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Text(
+            actor.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 }

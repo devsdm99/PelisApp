@@ -51,7 +51,7 @@ class Actor {
       profilePath = json["profile_path"];
   }
 
-  String getPosterImg() {
+  String getFoto() {
     if (profilePath == null) {
       return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png';
     } else {
