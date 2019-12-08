@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pelisapp/models/pelicula_model.dart';
 import 'package:pelisapp/providers/peliculas_providers.dart';
 import 'package:pelisapp/search/search_delegate.dart';
 import 'package:pelisapp/widgets/card_swiper_widget.dart';
